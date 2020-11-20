@@ -24,23 +24,23 @@ def ws_connect(message):
     room = message.content['path'].strip("/")
     # Save room in session and add us to the group
     message.channel_session['room'] = room
-    Group("chat-%s" % room).add(message.reply_channel)
+    Group(f"chat-{room}").add(message.reply_channel)
 
 # Connected to websocket.receive
 @channel_session
 def ws_message(message):
-    Group("chat-%s" % message.channel_session['room']).send({
+    Group(f"chat-{ message.channel_session['room']}).send({
         "text": message['text'],
     })
 
 # Connected to websocket.disconnect
 @channel_session
 def ws_disconnect(message):
-    Group("chat-%s" % message.channel_session['room']).discard(message.reply_channel)
+    Group(f"chat-{message.channel_session['room']}").discard(message.reply_channel)
 
 @channel_session_user_from_http
 def thread_connect(message, thread_id):
-    Group("thread-%s" % thread_id).add(message.reply_channel)
+    Group(f"thread-{thread_id}").add(message.reply_channel)
     # Accept the connection request
     message.reply_channel.send({"accept": True})
 
@@ -48,9 +48,9 @@ def thread_connect(message, thread_id):
 def thread_message(message, thread_id):
     # username = Account.objects.get(user=message.user.id)
     username = message.user.username
-    Group("thread-%s" % thread_id).send({
-        "text": "User " + str(username) + " says: " + message['text'],
+    Group(f"thread-{thread_id}").send({
+        "text": f"User {str(username)} says: {message['text']}",
     })
 @channel_session
 def thread_disconnect(message, thread_id):
-    Group("thread-%s" % thread_id).discard(message.reply_channel)
+    Group(f"thread-{thread_id}").discard(message.reply_channel)
