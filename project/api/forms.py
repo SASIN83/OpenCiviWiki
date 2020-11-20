@@ -82,7 +82,7 @@ class UpdateProfileImage(forms.ModelForm):
             max_height = 960
             max_width = 1280
             if w > max_width or h > max_height:
-                raise forms.ValidationError(u'Please use an image that is {w} x {h} pixels or smaller.'.format(w=max_width, h=max_height))
+                raise forms.ValidationError(f'Please use an image that is {max_width} x {max_height} pixels or smaller.')
 
             #validate content type
             main, sub = profile_image.content_type.split('/')
